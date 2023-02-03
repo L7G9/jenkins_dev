@@ -26,7 +26,6 @@ docker container rm $DIND_CONTAINER_NAME
 
 echo "<---Removing images--->"
 docker image rm $JENKINS_IMAGE_NAME
-docker image rm 
 
 echo "<---Removing docker network--->"
 docker network rm $NETWORK_NAME
