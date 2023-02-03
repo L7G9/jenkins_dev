@@ -1,9 +1,14 @@
 #!/bin/bash
 
+# setup.sh
+# Created by Luke Gregory (lukewgregory@gmail.com)
+# 3/2/2023
+
+
 # exit if any command fails
 set -e
 
-echo "<-Starting Jenkins Docker in Docker setup->"
+echo "<---Starting Jenkins Docker in Docker setup--->"
 
 if (($# != 3))
 then
@@ -15,7 +20,9 @@ then
 fi
 
 NETWORK_NAME="jenkins"
+
 DIND_CONTAINER_NAME="jenkins-docker"
+JENKINS_IMAGE_NAME="myjenkins-blueocean:2.375.2-1"
 JENKINS_CONTAINER_NAME="jenkins-blueocean"
 CERTS_VOLUME_NAME="jenkins-docker-certs"
 CERTS_VOLUME_LOCATION="/certs/client"
@@ -26,10 +33,15 @@ JENKINS_ADMIN_ID=$1
 JENKINS_ADMIN_PASSWORD=$2
 JENKINS_URL=$3
 
-echo "Creating docker network"
+echo "\n<---Creating docker network--->"
 docker network create $NETWORK_NAME
 
-echo "Starting DIND (docker in docker) container"
+echo "\n<---Adding Jcasc file to data volume--->"
+docker run -v $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION --name helper busybox true
+docker cp $JCASC_FILE helper:$DATA_VOLUME_NAME
+docker rm helper
+
+echo "\n<---Starting DIND (docker in docker) container--->"
 docker run \
   --name jenkins-docker \
   --rm \
@@ -44,13 +56,10 @@ docker run \
   docker:dind \
   --storage-driver overlay2
 
-echo "Adding Jcasc file to data volume"
-docker cp $JCASC_FILE $DIND_CONTAINER_NAME:$DATA_VOLUME_NAME
+echo "\n<---Building Jenkins image--->"
+docker build -t $JENKINS_IMAGE_NAME .
 
-echo "Building Jenkins image"
-docker build -t myjenkins-blueocean:2.375.2-1 .
-
-echo "Starting Jenkins container"
+echo "\n<---Starting Jenkins container--->"
 docker run \
   --name $JENKINS_CONTAINER_NAME \
   --restart=on-failure \
@@ -66,6 +75,6 @@ docker run \
   --publish 50000:50000 \
   --volume $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION \
   --volume $CERTS_VOLUME_NAME:$CERTS_VOLUME_LOCATION:ro \
-  myjenkins-blueocean:2.375.2-1
+  $JENKINS_IMAGE_NAME
 
-echo "complete"
+echo "\n<---Script Complete--->"
