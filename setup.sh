@@ -18,15 +18,9 @@ then
   exit 1
 fi
 
-NETWORK_NAME="jenkins"
-DIND_CONTAINER_NAME="jenkins-docker"
-JENKINS_IMAGE_NAME="myjenkins-blueocean:2.375.2-1"
-JENKINS_CONTAINER_NAME="jenkins-blueocean"
-CERTS_VOLUME_NAME="jenkins-docker-certs"
-CERTS_VOLUME_LOCATION="/certs/client"
-DATA_VOLUME_NAME="jenkins-data"
-DATA_VOLUME_LOCATION="/var/jenkins_home"
-JCASC_FILE="casc.yaml"
+# import common variables
+source variables.sh
+
 JENKINS_ADMIN_ID=$1
 JENKINS_ADMIN_PASSWORD=$2
 JENKINS_URL=$3
@@ -35,7 +29,7 @@ echo "<---Creating docker network--->"
 docker network create $NETWORK_NAME
 
 echo "<---Adding Jcasc file to data volume--->"
-docker run -v $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION --name helper jenkins/jenkins:2.375.2 true
+docker run -v $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION --name helper $JENKINS_OFFICIAL_IMAGE true
 docker cp $JCASC_FILE helper:$DATA_VOLUME_LOCATION
 docker rm helper
 
