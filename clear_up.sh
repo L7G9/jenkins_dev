@@ -29,7 +29,10 @@ if [[ "$remove_data_volume" == "y" ]]; then
   docker volume rm $DATA_VOLUME_NAME
 fi
 
-echo "<---Removing certs volume--->"
-docker volume rm $CERTS_VOLUME_NAME
+read -p "Remove certs volume? (y/n): " remove_certs_volume
+if [[ "$remove_certs_volume" == "y" ]]; then
+  echo  "<---Removing certs volume--->"
+  docker volume rm $CERTS_VOLUME_NAME
+fi
 
 echo "<---Script Complete--->"
