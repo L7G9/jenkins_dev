@@ -9,21 +9,20 @@ set -e
 
 echo "<---Starting Jenkins Docker in Docker setup--->"
 
-if (($# != 3))
+if (($# != 2))
 then
-  echo "3 arguments required..."
-  echo "  1nd : Jenkins admin Id"
-  echo "  2rd : Jenkins admin password"
-  echo "  3th : Jenkins URL"
+  echo "1 arguments required..."
+  echo "  1st : Jenkins admin password"
+  echo "  2nd : Jenkins URL"
   exit 1
 fi
 
 # import common variables
 source variables.sh
 
-JENKINS_ADMIN_ID=$1
-JENKINS_ADMIN_PASSWORD=$2
-JENKINS_URL=$3
+JENKINS_ADMIN_ID="admin"
+JENKINS_ADMIN_PASSWORD=$1
+JENKINS_URL=$2
 
 echo "<---Creating docker network--->"
 docker network create $NETWORK_NAME
