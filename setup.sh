@@ -35,7 +35,7 @@ docker rm helper
 echo "<---Starting DIND (docker in docker) container--->"
 docker run \
   --name $DIND_CONTAINER_NAME \
-  --rm \
+  --restart=unless-stopped \
   --detach \
   --privileged \
   --network $NETWORK_NAME \
@@ -53,9 +53,9 @@ docker build -t $JENKINS_IMAGE_NAME .
 echo "<---Starting Jenkins container--->"
 docker run \
   --name $JENKINS_CONTAINER_NAME \
-  --restart=on-failure \
+  --restart=unless-stopped \
   --detach \
-  --network jenkins \
+  --network $NETWORK_NAME \
   --env DOCKER_HOST=tcp://docker:2376 \
   --env DOCKER_CERT_PATH=$CERTS_VOLUME_LOCATION \
   --env DOCKER_TLS_VERIFY=1 \
