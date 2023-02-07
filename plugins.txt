@@ -33,7 +33,7 @@ bootstrap4-api
 bouncycastle-api
 branch-api
 build-pipeline-plugin
-build-timeout:latest
+build-timeout
 checks-api
 cloudbees-bitbucket-branch-source
 cloudbees-folder
@@ -45,7 +45,12 @@ credentials-binding
 credentials
 dashboard-view
 display-url-api
+docker-plugin
+docker-build-step
 docker-commons
+docker-compose-build-step
+docker-java-api
+docker-slaves
 docker-workflow
 durable-task
 ec2
@@ -62,7 +67,7 @@ github-api
 github-branch-source
 github-pullrequest
 github
-gradle:latest
+gradle
 handlebars
 handy-uri-templates-2-api
 htmlpublisher
@@ -96,7 +101,7 @@ p4
 pam-auth
 parameterized-trigger
 pipeline-build-step
-pipeline-github-lib:latest
+pipeline-github-lib
 pipeline-graph-analysis
 pipeline-input-step
 pipeline-milestone-step
@@ -129,7 +134,7 @@ structs
 subversion
 support-core
 token-macro
-timestamper:latest
+timestamper
 trilead-api
 variant
 windows-slaves
@@ -144,4 +149,4 @@ workflow-multibranch
 workflow-scm-step
 workflow-step-api
 workflow-support
-ws-cleanup:latest
+ws-cleanup
