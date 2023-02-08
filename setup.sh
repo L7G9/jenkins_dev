@@ -27,11 +27,6 @@ JENKINS_URL=$2
 echo "<---Creating docker network--->"
 docker network create $NETWORK_NAME
 
-echo "<---Adding Jcasc file to data volume--->"
-docker run -v $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION --name helper $JENKINS_OFFICIAL_IMAGE true
-docker cp $JCASC_FILE helper:$DATA_VOLUME_LOCATION
-docker rm helper
-
 echo "<---Starting DIND (docker in docker) container--->"
 docker run \
   --name $DIND_CONTAINER_NAME \
@@ -47,8 +42,21 @@ docker run \
   docker:dind \
   --storage-driver overlay2
 
+echo "<---Waiting for $DIND_CONTAINER_NAME to start--->"
+sleep 30 # is there a better way to do this?
+
+echo "<---Get certificates from $DIND_CONTAINER_NAME--->"
+CLIENT_KEY=$(docker exec jenkins-docker cat /certs/client/key.pem)
+CLIENT_CERT=$(docker exec jenkins-docker cat /certs/client/cert.pem)
+SERVER_CA=$(docker exec jenkins-docker cat /certs/server/ca.pem)
+
 echo "<---Building Jenkins image--->"
 docker build -t $JENKINS_IMAGE_NAME .
+
+echo "<---Adding Jcasc file to data volume--->"
+docker run --name helper --detach --rm --volume $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION $JENKINS_IMAGE_NAME
+docker cp $JCASC_FILE helper:$DATA_VOLUME_LOCATION
+docker container stop helper
 
 echo "<---Starting Jenkins container--->"
 docker run \
@@ -62,6 +70,9 @@ docker run \
   --env JENKINS_ADMIN_ID=$JENKINS_ADMIN_ID \
   --env JENKINS_ADMIN_PASSWORD=$JENKINS_ADMIN_PASSWORD \
   --env JENKINS_URL=$JENKINS_URL \
+  --env CLIENT_KEY="$CLIENT_KEY" \
+  --env CLIENT_CERT="$CLIENT_CERT" \
+  --env SERVER_CA="$SERVER_CA" \
   --publish 8080:8080 \
   --publish 50000:50000 \
   --volume $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION \

@@ -1,3 +1,14 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - x509ClientCert:
+          clientCertificate: ${CLIENT_CERT}
+          clientKeySecret: ${CLIENT_KEY}
+          description: "Credentials needed to connect to the jenkins-docker container"
+          id: "jenkins-docker"
+          scope: GLOBAL
+          serverCaCertificate: ${SERVER_CA}
 jenkins:
   securityRealm:
     local:
@@ -10,6 +21,26 @@ jenkins:
       permissions:
         - "Overall/Administer:admin"
         - "Overall/Read:authenticated"
+  clouds:
+  - docker:
+      dockerApi:
+        connectTimeout: 60
+        dockerHost:
+          credentialsId: "jenkins-docker"
+          uri: "tcp://docker:2376"
+        readTimeout: 60
+      name: "docker"
+      templates:
+      - connector: "attach"
+        dockerTemplateBase:
+          cpuPeriod: 0
+          cpuQuota: 0
+          image: "jenkins/agent:latest-jdk11"
+        labelString: "jenkins-agent"
+        name: "jenkins-agent"
+        pullStrategy: PULL_ALWAYS
+        pullTimeout: 300
+        remoteFs: "/home/jenkins/agent"
   remotingSecurity:
     enabled: true
 security:
