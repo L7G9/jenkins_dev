@@ -43,7 +43,7 @@ docker run \
   --storage-driver overlay2
 
 echo "<---Waiting for $DIND_CONTAINER_NAME to start--->"
-sleep 30 # is there a better way to do this?
+sleep 30
 
 echo "<---Get certificates from $DIND_CONTAINER_NAME--->"
 CLIENT_KEY=$(docker exec jenkins-docker cat /certs/client/key.pem)
@@ -52,11 +52,6 @@ SERVER_CA=$(docker exec jenkins-docker cat /certs/server/ca.pem)
 
 echo "<---Building Jenkins image--->"
 docker build -t $JENKINS_IMAGE_NAME .
-
-echo "<---Adding Jcasc file to data volume--->"
-docker run --name helper --detach --rm --volume $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION $JENKINS_IMAGE_NAME
-docker cp $JCASC_FILE helper:$DATA_VOLUME_LOCATION
-docker container stop helper
 
 echo "<---Starting Jenkins container--->"
 docker run \
@@ -78,5 +73,8 @@ docker run \
   --volume $DATA_VOLUME_NAME:$DATA_VOLUME_LOCATION \
   --volume $CERTS_VOLUME_NAME:$CERTS_VOLUME_LOCATION:ro \
   $JENKINS_IMAGE_NAME
+
+echo "<---Copy Jcasc file to data volume--->"
+docker cp $JCASC_FILE $JENKINS_CONTAINER_NAME:$DATA_VOLUME_LOCATION
 
 echo "<---Script Complete--->"

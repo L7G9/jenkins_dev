@@ -1,9 +1,7 @@
-ace-editor
 amazon-ecr
 ant
 antisamy-markup-formatter
 apache-httpcomponents-client-4-api
-async-http-client
 authentication-tokens
 aws-credentials
 aws-java-sdk
@@ -68,7 +66,6 @@ github-branch-source
 github-pullrequest
 github
 gradle
-handlebars
 handy-uri-templates-2-api
 htmlpublisher
 jackson2-api
@@ -78,7 +75,6 @@ jenkins-design-language
 jira
 jjwt-api
 job-dsl
-jquery-detached
 jquery
 jquery3-api
 jsch
@@ -94,7 +90,6 @@ matrix-project
 maven-plugin
 mercurial
 metrics
-momentjs
 node-iterator-api
 okhttp-api
 p4
@@ -137,11 +132,9 @@ token-macro
 timestamper
 trilead-api
 variant
-windows-slaves
 workflow-aggregator
 workflow-api
 workflow-basic-steps
-workflow-cps-global-lib
 workflow-cps
 workflow-durable-task-step
 workflow-job

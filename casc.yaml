@@ -21,6 +21,7 @@ jenkins:
       permissions:
         - "Overall/Administer:admin"
         - "Overall/Read:authenticated"
+  numExecutors: 0
   clouds:
   - docker:
       dockerApi:
@@ -48,3 +49,4 @@ security:
 unclassified:
   location:
     url: http:// ${JENKINS_URL}:8080/
+
