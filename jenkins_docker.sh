@@ -1,16 +1,29 @@
 #!/usr/bin/env bash
 #===============================================================================
-#title           :jenkins_docker.sh
-#description     :Installs and configures, or removes Jenkins on Docker on local
-#                :host for use in a development environment
-#author          :Luke Gregory (lukewgregory@gmail.com)
-#date            :10/2/2023
-#version         :1.0
-#usage           :./jenkins_docker.sh --admin_password password --url 12.23.54.13
-#                :./jenkins_docker.sh --remove --data --certs
-#notes           :Requires Docker (tested on version 23.0.0-rc.3, build e1152b2)
-#                :Requires pluguns.txt and casc.yaml
-#bash_version    :5.1.16(1)-release
+# jenkins_docker.sh
+# Description:
+#   Installs and configures, or removes Jenkins on Docker on local host for use 
+#   in a development environment
+# Author:
+#   Luke Gregory (lukewgregory@gmail.com)
+# Date:
+#   10/2/2023
+# Version:
+#   1.0
+# Usage:
+#   Setup
+#     ./jenkins_docker.sh --admin_password pword --url 12.2.54.13
+#   Remove
+#     ./jenkins_docker.sh --remove --data --certs
+# Notes:
+#   Requires Docker, tested on version 23.0.0-rc.3, build e1152b2
+#   Requires Dockerfile, plugins.txt and casc.yaml in same directory as script
+#     Dockerfile to build a custom Jenkins image
+#     plugins.txt is a list of Jenkins plugins to be installed 
+#     casc.yaml is the Jenkins Configuation as Code
+#   Examples which can be edited be 
+# Bash Version
+#   5.1.16(1)-release
 #===============================================================================
 
 set -Eeuo pipefail
@@ -27,7 +40,7 @@ Installs and configures Jenkins on docker by...
 - Creating a jenkins network in Docker
 - Running the Docker in Docker container
 - Geting the certifiacte details from Docker in Docker container
-- Creating a custom docker image for Jenkins with the plugins listed in plugin file
+- Creating a custom image for Jenkins with the plugins listed in plugin file
 - Running the Jenkins container
 - Copying Jenkins Configuation as Code file to the data volume
 
@@ -70,7 +83,18 @@ die() {
   exit "$code"
 }
 
+#===============================================================================
+# Parse & validate arugments from command line then call setup_jenkins or 
+# remove_jenkins
+# Globals:
+#   None
+# Arguments:
+#   Command line arguments, an array of strings.  
+# Outputs:
+#   Writes location to stdout
+#===============================================================================
 parse_params() {
+
   # Default values of variables set from params
   local admin_password=''
   local jenkins_url=''
@@ -78,6 +102,7 @@ parse_params() {
   local remove_data_volume=0
   local remove_cert_volume=0
 
+  # 
   while :; do
     case "${1-}" in
     -h | --help) usage ;;
@@ -98,9 +123,10 @@ parse_params() {
     shift
   done
 
+  #
   args=("$@")
 
-  # Check required params and arguments
+  # Check correct params and flags, then call setup or remove as required
   if (( $remove_jenkins == 0)); then
     [[ -z "${admin_password-}" ]] && die "Missing required parameter: password"
     [[ -z "${jenkins_url-}" ]] && die "Missing required parameter: url"
@@ -114,12 +140,30 @@ parse_params() {
     [[ -n "${jenkins_url-}" ]] && die "Unexpeected parameter: url"
     (( ${#args[@]} > 0 )) && die "No arguments expected"
 
-    clear_up_jenkins "${remove_data_volume}" "${remove_cert_volume}"
+    remove_jenkins "${remove_data_volume}" "${remove_cert_volume}"
   fi
 
   return 0
 }
 
+#===============================================================================
+# Setup & configure a Jenkins development environment with Docker on local host
+# Globals:
+#   NETWORK_NAME
+#   DIND_CONTAINER_NAME
+#   CERTS_VOLUME_NAME
+#   CERTS_VOLUME_LOCATION
+#   DATA_VOLUME_NAME
+#   DATA_VOLUME_LOCATION
+#   JENKINS_IMAGE_NAME
+#   JENKINS_CONTAINER_NAME
+#   JCASC_FILE
+# Arguments:
+#   Password for Jenkins admin account, a password.  
+#   Jenkins URL, a URL.  
+# Outputs:
+#   Writes location to stdout
+#===============================================================================
 setup_jenkins() {
 
   # Store aguments
@@ -177,10 +221,26 @@ setup_jenkins() {
     "${JENKINS_IMAGE_NAME}"
 
   # Copy Jcasc file to data volume
-  docker cp ${JCASC_FILE} ${JENKINS_CONTAINER_NAME}:${DATA_VOLUME_LOCATION}
+  docker cp ${JCASC_FILE} "${JENKINS_CONTAINER_NAME}:${DATA_VOLUME_LOCATION}"
 }
 
-clear_up_jenkins() {
+#===============================================================================
+# Remove Jenkins development environment from local host
+# Globals:
+#   JENKINS_CONTAINER_NAME
+#   DIND_CONTAINER_NAME
+#   JENKINS_IMAGE_NAME
+#   NETWORK_NAME
+#   DATA_VOLUME_NAME
+#   CERTS_VOLUME_NAME
+# Arguments:
+#   Remove data volume, a flag.  
+#   Remove certificate volume, a flag.
+# Outputs:
+#   Writes location to stdout
+#===============================================================================
+remove_jenkins() {
+
   # Store aguments
   local remove_data_volume=$1
   local remove_cert_volume=$2
@@ -202,4 +262,5 @@ clear_up_jenkins() {
   (( $remove_cert_volume == 1 )) && docker volume rm "${CERTS_VOLUME_NAME}"
 }
 
+# Start script by parsing parameters
 parse_params "$@"
