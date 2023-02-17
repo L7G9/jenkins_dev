@@ -2,7 +2,7 @@
 #===============================================================================
 # jenkins_docker.sh
 # Description:
-#   Installs and configures, or removes Jenkins on Docker on local host for use 
+#   Installs and configures, or removes Jenkins on Docker on local host for use
 #   in a development environment
 # Author:
 #   Luke Gregory (lukewgregory@gmail.com)
@@ -19,9 +19,9 @@
 #   Requires Docker, tested on version 23.0.0-rc.3, build e1152b2
 #   Requires Dockerfile, plugins.txt and casc.yaml in same directory as script
 #     Dockerfile to build a custom Jenkins image
-#     plugins.txt is a list of Jenkins plugins to be installed 
-#     casc.yaml is the Jenkins Configuation as Code
-#   Examples which can be edited be 
+#     plugins.txt is a list of Jenkins plugins to be installed
+#     casc.yaml is the Jenkins Configuration as Code file
+#   Examples which can be edited be
 # Bash Version
 #   5.1.16(1)-release
 #===============================================================================
@@ -36,13 +36,13 @@ usage() {
 Usage: $(basename "${BASH_SOURCE[0]}") [-h] -p password -u url
 Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-r] [-d] [-c]
 
-Installs and configures Jenkins on docker by...
-- Creating a jenkins network in Docker
+Installs and configures Jenkins on Docker by...
+- Creating a Jenkins network in Docker
 - Running the Docker in Docker container
-- Geting the certifiacte details from Docker in Docker container
+- Getting the certificate details from Docker in Docker container
 - Creating a custom image for Jenkins with the plugins listed in plugin file
 - Running the Jenkins container
-- Copying Jenkins Configuation as Code file to the data volume
+- Copying Jenkins Configuration as Code file to the data volume
 
 Available options:
 -c, --cert             Remove certificate volume (use with -r)
@@ -84,12 +84,12 @@ die() {
 }
 
 #===============================================================================
-# Parse & validate arugments from command line then call setup_jenkins or 
+# Parse & validate arguments from command line then call setup_jenkins or
 # remove_jenkins
 # Globals:
 #   None
 # Arguments:
-#   Command line arguments, an array of strings.  
+#   Command line arguments, an array of strings.
 # Outputs:
 #   Writes location to stdout
 #===============================================================================
@@ -102,7 +102,7 @@ parse_params() {
   local remove_data_volume=0
   local remove_cert_volume=0
 
-  # 
+  #
   while :; do
     case "${1-}" in
     -h | --help) usage ;;
@@ -159,21 +159,21 @@ parse_params() {
 #   JENKINS_CONTAINER_NAME
 #   JCASC_FILE
 # Arguments:
-#   Password for Jenkins admin account, a password.  
-#   Jenkins URL, a URL.  
+#   Password for Jenkins admin account, a password.
+#   Jenkins URL, a URL.
 # Outputs:
 #   Writes location to stdout
 #===============================================================================
 setup_jenkins() {
 
-  # Store aguments
+  # Store arguments
   local jenkins_admin_password="$1"
   local jenkins_url="$2"
 
   # Create network
   docker network create "${NETWORK_NAME}"
 
-  # Run Docker in Doocker container
+  # Run Docker in Docker container
   docker run \
     --name "${DIND_CONTAINER_NAME}" \
     --restart=unless-stopped \
@@ -234,14 +234,14 @@ setup_jenkins() {
 #   DATA_VOLUME_NAME
 #   CERTS_VOLUME_NAME
 # Arguments:
-#   Remove data volume, a flag.  
+#   Remove data volume, a flag.
 #   Remove certificate volume, a flag.
 # Outputs:
 #   Writes location to stdout
 #===============================================================================
 remove_jenkins() {
 
-  # Store aguments
+  # Store arguments
   local remove_data_volume=$1
   local remove_cert_volume=$2
 
@@ -264,3 +264,4 @@ remove_jenkins() {
 
 # Start script by parsing parameters
 parse_params "$@"
+
