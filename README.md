@@ -74,7 +74,8 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 ## Acknowledgments
 
-The following tutorials were very helpful with this project...
+The following links were very helpful with this project...
 * [Jenkins Configuration as Code Tutorial](https://www.digitalocean.com/community/tutorials/how-to-automate-jenkins-setup-with-docker-and-jenkins-configuration-as-code)
 * [Run Jenkins in a Docker container](https://davelms.medium.com/run-jenkins-in-a-docker-container-part-1-docker-in-docker-7ca75262619d)
-
+* [Bash Script template](https://betterdev.blog/minimal-safe-bash-script-template/)
+* [Readme template](https://gist.github.com/DomPizzie/7a5ff55ffa9081f2de27c315f5018afc)
