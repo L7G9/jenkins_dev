@@ -1,6 +1,6 @@
 # Jenkins Development Environment
 
-Provides a fast and repeatable installation and configuration of Jenkins for a development environment.  
+Provides a fast and repeatable installation and configuration of Jenkins for a development environment.
 
 ## Description
 
@@ -9,7 +9,7 @@ A Bash script to install Jenkins on an Ubuntu host using Docker.
     * Bypasses the setup wizard
     * Sets Jenkins to use a Configuration as Code file (casc.yaml)
     * Pre-installs a list of plugins (plugins.txt)
-* Runs Docker in Docker container to allow the Jenkins Docker container to use Docker.  
+* Runs Docker in Docker container to allow the Jenkins Docker container to use Docker.
 * Runs Jenkins container and copies Jenkins casc.yaml to correct location.
 * The casc.yaml file...
    * Adds the credentials needed to connect to the Docker in Docker container
@@ -17,9 +17,9 @@ A Bash script to install Jenkins on an Ubuntu host using Docker.
    * Set number of built in Executors to 0
    * Adds a Docker Cloud to Jenkins
    * Sets the Jenkins URL
-   
-The configuration of Jenkins can be altered by editing casc.yaml and plugins.txt as required.  
-   
+ 
+The configuration of Jenkins can be altered by editing casc.yaml and plugins.txt as required.
+
 ## Getting Started
 
 ### Dependencies
@@ -30,9 +30,9 @@ The configuration of Jenkins can be altered by editing casc.yaml and plugins.txt
 
 Clone the GitHub repository from command line.
 ```
-clone https://github.com/L7G9/jenkins_dev.git
+git clone https://github.com/L7G9/jenkins_dev.git
 ```
-Update casc.yaml and plugins.txt as required.  
+Update casc.yaml and plugins.txt as required.
 * See [Jcasc GitHub documentation](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/README.md) for guide to Jenkins Configuration as Code.
 * See [Plugins Index](https://plugins.jenkins.io/) for available Jenkins plugins.
 
